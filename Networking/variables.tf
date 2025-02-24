@@ -13,10 +13,10 @@ variable "availability_zones" {
   type        = list(string)
 }
 
-variable "vpcs" {
-  description = "Map of VPC definitions. Add additional entries to create more VPCs."
-  type = map(object({
-    vpc_cidr             = string
+        variable "vpcs" {
+       description = "Map of VPC definitions. Add additional entries to create more VPCs."
+   type = map(object({
+            vpc_cidr             = string
     vpc_name             = string
     public_subnet_cidrs  = list(string)
     private_subnet_cidrs = list(string)
