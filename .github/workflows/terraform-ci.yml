@@ -19,4 +19,5 @@ jobs:
         run: terraform fmt -check -recursive
 
       - name: Terraform Validate
+        working-directory: ./Networking
         run: terraform validate
