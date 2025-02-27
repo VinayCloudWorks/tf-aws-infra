@@ -5,11 +5,8 @@
 
 ## Learning Objectives
 
-- Understand and configure AWS networking components (VPC, Subnets, Internet Gateway, Route Tables).
-- Implement Infrastructure as Code (IaC) using Terraform.
-- Learn how to parameterize configurations (avoid hardcoding values).
-- Set up GitHub repository with branch protection and continuous integration (CI) using GitHub Actions.
-- Integrate AWS CLI for managing AWS resources locally.
+- This assignment provisions a custom networking stack, security group, and EC2 instance using Terraform.
+- The instance is launched in a custom VPC (not the default), uses a pre-built custom AMI (with name starting with webappAMI-), and is pre-configured to run a web application along with its health-check endpoint.
 
 ---
 
