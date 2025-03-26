@@ -65,3 +65,13 @@ variable "db_port" {
   description = "Database port"
   type        = number
 }
+
+variable "env" {
+  description = "Environment (dev or demo)"
+  type        = string
+  default     = "dev"
+  validation {
+    condition     = contains(["dev", "demo"], var.env)
+    error_message = "Environment must be either 'dev' or 'demo'."
+  }
+}
