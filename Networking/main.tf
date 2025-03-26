@@ -257,6 +257,92 @@ echo "DB_PORT=${var.db_port}" >> /etc/environment
 # Export S3 bucket name for file storage
 echo "S3_BUCKET_NAME=${aws_s3_bucket.attachments.bucket}" >> /etc/environment
 
+# Create directories for CloudWatch agent
+sudo mkdir -p /opt/aws/amazon-cloudwatch-agent/etc
+sudo mkdir -p /var/log/webapp
+
+# Install CloudWatch agent
+wget https://amazoncloudwatch-agent.s3.amazonaws.com/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb -O /tmp/amazon-cloudwatch-agent.deb
+sudo dpkg -i /tmp/amazon-cloudwatch-agent.deb
+
+# Create log directories with proper permissions
+sudo touch /var/log/webapp/application.log
+sudo touch /var/log/webapp/error.log
+sudo chown csye6225:csye6225 /var/log/webapp/*
+sudo chmod 664 /var/log/webapp/*
+
+# Create CloudWatch agent configuration file
+cat > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json << 'CWCONFIG'
+{
+  "agent": {
+    "metrics_collection_interval": 60,
+    "run_as_user": "root"
+  },
+  "logs": {
+    "logs_collected": {
+      "files": {
+        "collect_list": [
+          {
+            "file_path": "/var/log/webapp/application.log",
+            "log_group_name": "webapp-logs",
+            "log_stream_name": "{instance_id}-application-log",
+            "retention_in_days": 7
+          },
+          {
+            "file_path": "/var/log/webapp/error.log",
+            "log_group_name": "webapp-logs",
+            "log_stream_name": "{instance_id}-error-log",
+            "retention_in_days": 7
+          },
+          {
+            "file_path": "/var/log/syslog",
+            "log_group_name": "webapp-system-logs",
+            "log_stream_name": "{instance_id}-syslog",
+            "retention_in_days": 7
+          }
+        ]
+      }
+    }
+  },
+  "metrics": {
+    "namespace": "WebApp",
+    "metrics_collected": {
+      "statsd": {
+        "service_address": ":8125",
+        "metrics_collection_interval": 10,
+        "metrics_aggregation_interval": 60
+      },
+      "cpu": {
+        "resources": ["*"],
+        "measurement": ["cpu_usage_idle", "cpu_usage_user", "cpu_usage_system"],
+        "totalcpu": true
+      },
+      "mem": {
+        "measurement": ["mem_used_percent"]
+      },
+      "disk": {
+        "resources": ["/"],
+        "measurement": ["disk_used_percent"]
+      }
+    },
+    "append_dimensions": {
+      "InstanceId": "$${aws:InstanceId}"
+    }
+  }
+}
+CWCONFIG
+
+# Add the instance ID to environment for CloudWatch agent
+EC2_INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
+echo "EC2_INSTANCE_ID=$EC2_INSTANCE_ID" >> /etc/opt/csye6225/env.conf
+
+# Configure CloudWatch agent
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
+  -a fetch-config \
+  -m ec2 \
+  -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json \
+  -s
+
 # Create a custom environment file for the service using a different approach to avoid heredoc issues
 sudo mkdir -p /etc/opt/csye6225
 cat > /tmp/env.conf << 'ENDOFFILE'
