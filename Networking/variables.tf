@@ -75,3 +75,26 @@ variable "env" {
     error_message = "Environment must be either 'dev' or 'demo'."
   }
 }
+
+variable "domain_name" {
+  description = "Domain name for Route53 configuration"
+  type        = string
+}
+
+variable "scale_up_threshold" {
+  description = "CPU percentage threshold for scaling up"
+  type        = number
+  default     = 5
+}
+
+variable "scale_down_threshold" {
+  description = "CPU percentage threshold for scaling down"
+  type        = number
+  default     = 3
+}
+
+variable "cooldown_period" {
+  description = "Cooldown period in seconds for auto scaling"
+  type        = number
+  default     = 60
+}
