@@ -41,3 +41,4 @@ Before you begin, ensure that you have the following installed and configured:
 
 `terraform apply -var="aws_region=us-west-2" -var='availability_zones=["us-west-2a","us-west-2b","us-west-2c"]'
 `
+`dig NS yourdomain.tld`
