@@ -4,7 +4,7 @@
 resource "aws_security_group" "lb_sg" {
   name        = "load-balancer-security-group"
   description = "Security group for application load balancer"
-  vpc_id      = aws_vpc.main[keys(aws_vpc.main)[0]].id
+  vpc_id      = aws_vpc.main[local.primary_vpc_key].id
 
   ingress {
     description = "Allow HTTP"
@@ -36,13 +36,12 @@ resource "aws_security_group" "lb_sg" {
 }
 
 ###########################
-# Update Application Security Group - Remove direct internet access
+# Application Security Group
 ###########################
-# Note: This resource replaces the one in main.tf
 resource "aws_security_group" "app_sg" {
   name        = "application-security-group"
   description = "Security group for web application EC2 instances"
-  vpc_id      = aws_vpc.main[keys(aws_vpc.main)[0]].id
+  vpc_id      = aws_vpc.main[local.primary_vpc_key].id
 
   ingress {
     description = "Allow SSH"
