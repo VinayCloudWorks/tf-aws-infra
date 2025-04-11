@@ -42,3 +42,18 @@ Before you begin, ensure that you have the following installed and configured:
 `terraform apply -var="aws_region=us-west-2" -var='availability_zones=["us-west-2a","us-west-2b","us-west-2c"]'
 `
 `dig NS yourdomain.tld`
+
+
+`
+aws acm import-certificate \
+  --certificate fileb://demo_vinaysathe_me.crt \
+  --certificate-chain fileb://demo_vinaysathe_me.ca-bundle \
+  --private-key fileb://private.key \
+  --region us-east-1 \
+  --profile demo
+`
+
+
+`
+aws secretsmanager delete-secret --secret-id dev-db-credentials --force-delete-without-recovery --profile dev
+`

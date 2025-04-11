@@ -46,8 +46,9 @@ variable "instance_type" {
 }
 
 variable "db_password" {
-  description = "Password for the RDS instance master user"
+  description = "Password for the database (auto-generated, this is just a placeholder)"
   type        = string
+  default     = null # Set to null since we're generating it
   sensitive   = true
 }
 
@@ -97,4 +98,10 @@ variable "cooldown_period" {
   description = "Cooldown period in seconds for auto scaling"
   type        = number
   default     = 60
+}
+
+variable "import_certificate_command" {
+  description = "Command used to import the SSL certificate for demo environment (for documentation purposes)"
+  type        = string
+  default     = "aws acm import-certificate --certificate fileb://certificate.pem --private-key fileb://private-key.pem --certificate-chain fileb://certificate-chain.pem --region us-east-1"
 }
