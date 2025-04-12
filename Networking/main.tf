@@ -55,6 +55,10 @@ resource "aws_s3_bucket_lifecycle_configuration" "attachments_lifecycle" {
     id     = "transition_to_standard_ia"
     status = "Enabled"
 
+    filter {
+      prefix = "" # Empty prefix means apply to all objects
+    }
+
     transition {
       days          = 30
       storage_class = "STANDARD_IA"
