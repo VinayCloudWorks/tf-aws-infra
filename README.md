@@ -37,7 +37,7 @@ Before you begin, ensure that you have the following installed and configured:
    `terraform destroy -var="aws_profile=dev or demo"`
 
 
-## For overriding the availability_zones
+## Commands 
 
 `terraform apply -var="aws_region=us-west-2" -var='availability_zones=["us-west-2a","us-west-2b","us-west-2c"]'
 `
