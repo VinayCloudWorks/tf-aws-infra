@@ -1,59 +1,52 @@
-# Terraform AWS Infrastructure Setup
+# AWS Cloud Architecture Terraform Project
 
+## Overview
+This project automates the setup of AWS networking infrastructure using Terraform and integrates it with GitHub Actions for Continuous Integration (CI) to ensure proper formatting and validation of Terraform configurations.
 
----
+## Requirements
+Before running the Terraform configuration or the GitHub Actions workflow, ensure you have the following:
+- Terraform (1.5.0 or higher recommended)
+- AWS CLI installed and configured with a profile
 
-## Learning Objectives
+## Running Terraform Locally
+To run Terraform locally, follow these steps:
 
-- This assignment provisions a custom networking stack, security group, and EC2 instance using Terraform.
-- The instance is launched in a custom VPC (not the default), uses a pre-built custom AMI (with name starting with webappAMI-), and is pre-configured to run a web application along with its health-check endpoint.
+1. **Set the AWS Region Environment Variable**
+   ```bash
+   export AWS_REGION=us-east-1  # Replace with your preferred region
+   ```
 
----
+2. **Initialize Terraform**
+   ```bash
+   terraform init
+   ```
 
-## Pre-requisites
+3. **Format and Validate Terraform Files**
+   ```bash
+   terraform fmt -check -recursive
+   terraform validate
+   ```
 
-Before you begin, ensure that you have the following installed and configured:
-- [Terraform](https://www.terraform.io/downloads.html)
-- [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
-- Git and GitHub account access
-- An AWS account with the proper permissions for creating networking resources
+4. **Plan the Deployment**
+   ```bash
+   terraform plan -out=tfplan
+   ```
 
----
+5. **Apply the Configuration**
+   ```bash
+   terraform apply tfplan
+   ```
+   
+## Certificate Management
+To import an SSL certificate into AWS Certificate Manager (ACM), use the following command:
 
-## Commands 
-
-   `aws configure --profile profile name`
-
-   `terraform init`
-
-   `terraform fmt`
-
-   `terraform validate`
-
-   `terraform plan`
-
-   `terraform apply -var="aws_profile=dev or demo"`
-
-   `terraform destroy -var="aws_profile=dev or demo"`
-
-
-## Commands 
-
-`terraform apply -var="aws_region=us-west-2" -var='availability_zones=["us-west-2a","us-west-2b","us-west-2c"]'
-`
-`dig NS yourdomain.tld`
-
-
-`
+```bash
 aws acm import-certificate \
-  --certificate fileb://demo_vinaysathe_me.crt \
-  --certificate-chain fileb://demo_vinaysathe_me.ca-bundle \
-  --private-key fileb://private.key \
-  --region us-east-1 \
-  --profile demo
-`
+--certificate fileb://demo_vinaysathe_me.crt \
+--certificate-chain fileb://demo_vinaysathe_me.ca-bundle \
+--private-key fileb://private.key \
+--region us-east-1 \
+--profile demo
+```
 
-
-`
-aws secretsmanager delete-secret --secret-id dev-db-credentials --force-delete-without-recovery --profile dev
-`
+![Architecture Diagram](Architecture%20Diagram.png)
